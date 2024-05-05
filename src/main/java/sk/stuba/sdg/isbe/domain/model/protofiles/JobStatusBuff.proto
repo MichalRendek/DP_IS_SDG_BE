@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package sk.stuba.sdg.isbe.domain.model.protofiles;
+
+import "google/protobuf/timestamp.proto";
+
+// Enumeration for job status codes
+enum JobStatusEnum {
+  UNJOBSTATUS = 0;
+  JOB_FREE = 1; // "no in retCode" indicates this might not be used in return codes, but still defined for completeness.
+  JOB_IDLE = 2; // Similarly, not used in return codes.
+  JOB_PENDING = 3; // If pending, these jobs are sent to the device by property, only including pending jobs.
+  JOB_PROCESSING = 4; // Not used in return codes.
+  JOB_DONE = 5;
+  JOB_ERR = 6;
+  JOB_PAUSED = 7; // Not used in return codes.
+  JOB_CANCELED = 8;
+  JOB_STATUS_MAX = 9; // Typically used to indicate the count of enums, might not be needed in Protobuf definitions.
+}
+
+// Data point structure
+message DataPoint {
+  string tag = 1;
+  double value = 2; // Using double to represent floating-point numbers
+  double measureAt = 3;
+}
+
+// JobStatus structure
+message JobStatus {
+  string uid = 1;
+  string jobId = 2;
+  JobStatusEnum retCode = 3;
+  JobStatusEnum code = 4;
+  int32 currentStep = 5;
+  int32 totalSteps = 6;
+  int32 currentCycle = 7;
+  repeated DataPoint data = 8; // Repeated field for list of DataPoint messages
+  google.protobuf.Timestamp lastUpdated = 10; // Using Timestamp for lastUpdated field
+  string deviceKey = 11;
+}

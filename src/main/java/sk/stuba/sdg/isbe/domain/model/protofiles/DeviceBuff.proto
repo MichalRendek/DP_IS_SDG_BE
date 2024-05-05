@@ -1,0 +1,54 @@
+syntax = "proto3";
+
+package sk.stuba.sdg.isbe.domain.model.protofiles;
+import "google/protobuf/timestamp.proto";
+
+import "JobStatusBuff.proto"; // Import the file
+
+// Assuming Job is defined in another .proto file, you might need to import it.
+// import "job.proto";
+
+enum DeviceTypeEnum {
+  UNDEVICETYPE = 0;
+  ESP32 = 1;
+  SDG_CUBE = 2;
+}
+
+message Device {
+  string uid = 1;
+  string name = 2;
+  string mac = 3;
+  repeated Job jobs = 4; // List of Job messages.
+  int64 responseTime = 5;
+  string initApiKey = 6;
+  bool deactivated = 7;
+}
+
+message Job {
+  string uid = 1;
+  string deviceId = 2;
+  string name = 3;
+  int32 noOfCmds = 4;
+  int32 noOfReps = 5;
+  // Omitting status since it's a complex type with DBRef. Representing it would depend on the details of JobStatus.
+  JobStatusEnum currentStatus = 6;
+  repeated Command commands = 7; // Assuming Command is a structured message you've defined elsewhere
+  bool toCancel = 8;
+  bool paused = 9;
+  google.protobuf.Timestamp createdAt = 10;
+  google.protobuf.Timestamp startedAt = 11;
+  google.protobuf.Timestamp finishedAt = 12;
+  repeated int32 scheduledDays = 13; // List of days
+  int32 scheduledHour = 14;
+  int32 scheduledMinute = 15;
+  JobStatus status = 16;
+}
+
+message Command {
+  string id = 1;
+  string name = 2;
+  repeated double params = 3; // Lists in Java map to 'repeated' fields in Protobuf.
+  DeviceTypeEnum deviceType = 4;
+  int64 createdAt = 5; // Using int64 for date timestamps.
+  bool deactivated = 6; // No need to represent the @JsonIgnore annotation in Protobuf.
+}
